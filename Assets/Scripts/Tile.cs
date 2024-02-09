@@ -13,7 +13,7 @@ public class Tile : MonoBehaviour
     public TileType CurrentType { get; private set; }
     [SerializeField] private TileDataSO tileData;
     private TileDataSO previousTileData;
-    [SerializeField] private TileDataSO[] tileDatas;
+    [SerializeField] private PossibleTilesListSO possibleTileDatas;
     private bool inHasteMode;
     public TileDataSO Data => tileData;
 
@@ -73,17 +73,8 @@ public class Tile : MonoBehaviour
         if (Activated) return;
 
         // TODO: Make this random initialization better
-        
-        float rdm = Random.value;
-        if (rdm < 0.45f)
-        {
-            tileData = tileDatas[0];
-        }
-        else if (rdm < 0.9f)
-        {
-            tileData = tileDatas[1];
-        }
-        else tileData = tileDatas[2];
+
+        tileData = possibleTileDatas.GetRandomData();
         
         //tileData = tileDatas[Random.Range(0, tileDatas.Length)];
         Activated = true;
@@ -175,7 +166,7 @@ public class Tile : MonoBehaviour
         if (inHasteMode) return;
         previousTileData = tileData;
         inHasteMode = true;
-        UpdateTile(tileDatas[2]);
+        UpdateTile(possibleTileDatas.GetHasteTileData());
     }
 
     public void DeactivateTemporaryHaste()

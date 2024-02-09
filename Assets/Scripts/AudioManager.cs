@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource sfxSourceBackground;
+    [SerializeField] private AudioMixer musicMixer;
     private AudioClip currentBgSection;
     private AudioClip nextBgSection;
     private int currentBgSectionIndex;
@@ -22,6 +25,7 @@ public class AudioManager : MonoBehaviour
     private int[] beatsToAllowGlitchEffect = {0,1,5,6,9,10,13,14};
 
     [SerializeField] private SamplesSO _samples;
+    [SerializeField] private ScoreController scoreController;
     public SamplesSO Samples => _samples;
     public static AudioManager instance;
 
@@ -41,13 +45,14 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
+        musicMixer = sfxSourceBackground.outputAudioMixerGroup.audioMixer;
         secPerBeat = BeatManager.instance.SecondsPerBeat;
     }
 
     private void OnEnable()
     {
         BeatManager.instance.OnClapPlayed += PlayClap;
-        //BeatManager.instance.OnEveryBeat += PlayHihat;
+        scoreController.OnComboUpdated += PlayLostComboEffect;
         BeatManager.instance.OnEveryBeat += HandleBackgroundMusic;
         BeatManager.instance.OnHasteRealised += OnHasteClap;
         GameManager.instance.OnGameFinished += FinishedGameSfx;
@@ -125,7 +130,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayNextBgSection()
     {
-        Debug.LogWarning("SONG GLITCH ON BEAT " + beatCounter);
+        Debug.LogWarning("SONG GLITCH ON BEAT " + beatCounter + "(" + beatCounter % 16 + ")");
         trackOnGlitchEffect = true;
         hastenedTrackTime = BeatManager.instance.CurrentBeatPosition * secPerBeat + secPerBeat;
         sfxSourceBackground.time = hastenedTrackTime;
@@ -141,6 +146,32 @@ public class AudioManager : MonoBehaviour
         {
              hastenClapPlayed = true;
         }
+    }
+
+    public void PlayLostComboEffect(int mult, float progress)
+    {
+        if (mult != 1 || progress != 0) return;
+        StopAllCoroutines();
+        StartCoroutine(LostComboEffect());
+    }
+
+    IEnumerator LostComboEffect()
+    {
+        float elapsed = 0f;
+        float duration = 0.3f;
+        float currValue;
+        float pitchDecreaseAmount = 0.01f;
+        float initialPitch = 1;
+
+        while (elapsed < duration)
+        {
+            musicMixer.GetFloat("Pitch", out currValue);
+            musicMixer.SetFloat("Pitch", currValue - pitchDecreaseAmount);  
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        musicMixer.SetFloat("Pitch", initialPitch);
     }
     
     

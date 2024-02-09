@@ -171,8 +171,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sfxSource: {fileID: 722511290}
   sfxSourceBackground: {fileID: 659016453}
+  musicMixer: {fileID: 0}
   beatCounter: 0
   _samples: {fileID: 11400000, guid: e0feed56f1e8c8b4cb0d50981ee295df, type: 2}
+  scoreController: {fileID: 1637267690}
 --- !u!1 &214988961
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +276,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.75, y: 1, z: 0.75}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -521,50 +523,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &648737928
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 648737930}
-  - component: {fileID: 648737929}
-  m_Layer: 0
-  m_Name: Grid
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!156049354 &648737929
-Grid:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 648737928}
-  m_Enabled: 1
-  m_CellSize: {x: 2, y: 2, z: 2}
-  m_CellGap: {x: 0, y: 0, z: 0}
-  m_CellLayout: 0
-  m_CellSwizzle: 1
---- !u!4 &648737930
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 648737928}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &659016451
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,7 +564,7 @@ AudioSource:
   m_GameObject: {fileID: 659016451}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 2600064011571151654, guid: 99cb76cf143cfa54c865a5735fe1d48e, type: 2}
   m_audioClip: {fileID: 8300000, guid: e403e3fd7074a704b810d7a949d25c13, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
@@ -1156,11 +1114,134 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcc13bb425027145b744f6c6f4dceef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  songPosInBeats: 0
   bpm: 80
   gameLengthInBeats: 120
   beat: 0
   bgMusicSource: {fileID: 659016453}
+--- !u!1 &945006925
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 945006927}
+  - component: {fileID: 945006926}
+  m_Layer: 0
+  m_Name: PostProcessManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &945006926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945006925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffc9d60cb4541b6488c35616d16b1363, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volume: {fileID: 895579992}
+  chromaticAberrationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  vignetteColorCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: -0.30934623
+      outSlope: -0.30934623
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.70803493
+    - serializedVersion: 3
+      time: 0.5060955
+      value: 0.99710244
+      inSlope: 0.0032722566
+      outSlope: 0.0032722566
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33354187
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0.08341609
+      outSlope: 0.08341609
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.801437
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  vignetteIntensityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.2004717
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.49564433
+      value: 0.26478726
+      inSlope: 0.0053499937
+      outSlope: 0.0053499937
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.2
+      inSlope: 0.006562782
+      outSlope: 0.006562782
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.5747816
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  vignetteColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 0}
+  defaultVignetteColor:
+    overrideState: 0
+    value: {r: 0, g: 0, b: 0, a: 0}
+  lostComboEffectDuration: 0.4
+  successEffectDuration: 0.5
+  scoreController: {fileID: 1637267690}
+--- !u!4 &945006927
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945006925}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1477,7 +1558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4405bd97891cfaf42bb4626ff257c12b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 9
+  size: 7
   tile: {fileID: -2309513171942368529, guid: 25ef1418b8a8d8049bd5dbd45fac720f, type: 3}
   cam: {fileID: 963194227}
 --- !u!4 &1353383201
@@ -6757,7 +6838,6 @@ SceneRoots:
   - {fileID: 963194228}
   - {fileID: 705507995}
   - {fileID: 214988965}
-  - {fileID: 648737930}
   - {fileID: 7764700071708414387}
   - {fileID: 550305317}
   - {fileID: 915753096}
@@ -6768,3 +6848,4 @@ SceneRoots:
   - {fileID: 620246775}
   - {fileID: 2120009777}
   - {fileID: 895579993}
+  - {fileID: 945006927}

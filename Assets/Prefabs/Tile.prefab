@@ -48,10 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: b151c3156a931de47b9e09b0ef4cf9b0, type: 2}
-  tileDatas:
-  - {fileID: 11400000, guid: b151c3156a931de47b9e09b0ef4cf9b0, type: 2}
-  - {fileID: 11400000, guid: ddd4113102096684f8583412ff91d523, type: 2}
-  - {fileID: 11400000, guid: c169e2eb9b5522f4db1b84be581a887b, type: 2}
+  possibleTileDatas: {fileID: 11400000, guid: 6648e8c8203431345adaf90229431b64, type: 2}
 --- !u!114 &2467059896224848314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,7 +92,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.051, z: 0}
-  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4425701261374184718}
@@ -181,7 +178,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.95, y: 0.1, z: 0.95}
+  m_LocalScale: {x: 0.85, y: 0.1, z: 0.85}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4425701261374184718}

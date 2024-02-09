@@ -42,6 +42,7 @@ public class ScoreController : MonoBehaviour
 
     public void LoseCombo()
     {
+        if(consecutiveScore == 0) return;
         // Reset Combo and Consecutive score count
         comboMultiplier = 1;
         consecutiveScore = 0;
