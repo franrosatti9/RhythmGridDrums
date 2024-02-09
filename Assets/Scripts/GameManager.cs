@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public event Action OnGameStarted;
     public event Action OnGameFinished;
     public event Action OnMiss;
+    public event Action OnSuccesOrFail;
     public event Action<int> OnTileSuccess;
     public static GameManager instance;
     private void Awake()

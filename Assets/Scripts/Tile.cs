@@ -21,11 +21,35 @@ public class Tile : MonoBehaviour
     {
         _animation = GetComponent<TileAnimation>();
         BeatManager.instance.OnClapPlayed += HandleClapPlayed;
+        Player.instance.OnPlayerMoved += HandlePlayerMoved;
+        GameManager.instance.OnMiss += HandlePlayerMissed;
+    }
+
+    private void OnDisable()
+    {
+        BeatManager.instance.OnClapPlayed -= HandleClapPlayed;
+        Player.instance.OnPlayerMoved -= HandlePlayerMoved;
+        GameManager.instance.OnMiss -= HandlePlayerMissed;
+    }
+
+    private void HandlePlayerMoved(Tile newTile)
+    {
+        if (newTile == this) return;
+        
+        if(inHasteMode) DeactivateTemporaryHaste();
+    }
+
+    private void HandlePlayerMissed()
+    {
+        // TODO: Rework this, maybe handle everything on GameManager and deactivate from there
+        if(Player.instance.currentTile == this) TileFailed();
+        
+        if(inHasteMode) DeactivateTemporaryHaste();
     }
 
     private void HandleClapPlayed(float obj)
     {
-        if(inHasteMode) DeactivateTemporaryHaste();
+        //if(inHasteMode) DeactivateTemporaryHaste();
     }
 
     void Start()
@@ -47,7 +71,21 @@ public class Tile : MonoBehaviour
     public void ActivateTile()
     {
         if (Activated) return;
-        tileData = tileDatas[Random.Range(0, tileDatas.Length)];
+
+        // TODO: Make this random initialization better
+        
+        float rdm = Random.value;
+        if (rdm < 0.45f)
+        {
+            tileData = tileDatas[0];
+        }
+        else if (rdm < 0.9f)
+        {
+            tileData = tileDatas[1];
+        }
+        else tileData = tileDatas[2];
+        
+        //tileData = tileDatas[Random.Range(0, tileDatas.Length)];
         Activated = true;
         
         _animation.StartActivateAnim(tileData);
@@ -66,14 +104,18 @@ public class Tile : MonoBehaviour
 
     public void CompletedTile()
     {
-        GameManager.instance.CompletedTile();
+        if (!Activated) return;
+        ResetTile();
         _animation.StartCompletedAnim(tileData, ResetTile);
+        GameManager.instance.CompletedTile();
+        
         //Debug.Log("TILE SUCCESS");
     }
 
     public void TileFailed()
     {
-        // Handle 
+        if (!Activated) return;
+        ResetTile();
         _animation.StartDeactivatedAnim(tileData, ResetTile);
         GameManager.instance.MissedTile();
     }
@@ -101,9 +143,36 @@ public class Tile : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
     }
+    
+    public void TransformSurroundingTiles()
+    {
+        GetNeighbourTile(Vector3.forward);
+        GetNeighbourTile(Vector3.left);
+        GetNeighbourTile(Vector3.right);
+        GetNeighbourTile(Vector3.back);
+
+        inHasteMode = false;
+    }
+    
+    Tile GetNeighbourTile(Vector3 dir)
+    {
+        if (Physics.Raycast(transform.position, dir, out RaycastHit hit, 1f))
+        {
+            var tile = hit.collider.GetComponentInParent<Tile>();
+            if (tile)
+            {
+                Debug.Log("hit " + tile.name + " in " + tile.transform.position);
+                tile.ActivateTemporaryHaste();
+                return tile;
+            }
+        }
+
+        return null;
+    }
 
     public void ActivateTemporaryHaste()
     {
+        if (inHasteMode) return;
         previousTileData = tileData;
         inHasteMode = true;
         UpdateTile(tileDatas[2]);
@@ -111,6 +180,7 @@ public class Tile : MonoBehaviour
 
     public void DeactivateTemporaryHaste()
     {
+        //Debug.Log("Deactivate Haste!");
         UpdateTile(previousTileData);
         inHasteMode = false;
     }

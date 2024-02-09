@@ -15,16 +15,27 @@ public class Player : MonoBehaviour
     [SerializeField] private float moveTime = 0.5f;
     [SerializeField] float rayOffsetDistance = 2f;
 
-    private bool hasteQueued = false;
+    private bool inHasteMode = false;
 
     private List<float> currentKickInput = new List<float>();
 
     public Queue<float> kicksToPlay = new();
 
     public Tile currentTile;
-    void Start()
+
+    public event Action<Tile> OnPlayerMoved;
+
+    public static Player instance;
+    private void Awake()
     {
-        
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
     }
 
     private void OnEnable()
@@ -135,14 +146,18 @@ public class Player : MonoBehaviour
         // Apply tile effect if moved correctly (like skip or hasten next clap)
         if (correctMovement)
         {
-            currentTile.ApplyEffect();
-            if (currentTile.Data.effect == TileEffect.HastenClap && !hasteQueued)
+            if (!inHasteMode) currentTile.ApplyEffect();
+            
+            if (currentTile.Data.effect == TileEffect.HastenClap && !inHasteMode)
             {
-                hasteQueued = true;
+                inHasteMode = true;
+                currentTile.TransformSurroundingTiles();
+                return;
             }
         }
         else currentTile.TileFailed();
         
+        if (inHasteMode) inHasteMode = false;
     }
     public void MovePlayer(Tile newTile)
     {
@@ -151,6 +166,7 @@ public class Player : MonoBehaviour
         
         
         if(currentTile != null && currentTile.Activated) CheckTileCompletion();
+        OnPlayerMoved?.Invoke(newTile);
         ChangeCurrentTile(newTile, correctMovement);
         StartCoroutine(MoveToNextTile(newTile.transform.position));
     }
@@ -171,7 +187,7 @@ public class Player : MonoBehaviour
 
         // Finish lerp
         transform.position = target;
-        if(hasteQueued) TransformSurroundingTiles();
+        //if(inHasteMode) TransformSurroundingTiles();
 
         yield return new WaitForSeconds(movementRate - moveTime);
 
@@ -189,7 +205,7 @@ public class Player : MonoBehaviour
         GetNeighbourTile(Vector3.right);
         GetNeighbourTile(Vector3.back);
 
-        hasteQueued = false;
+        inHasteMode = false;
 /*
         surroundingTiles.Add(GetNeighbourTile(Vector3.forward));
         surroundingTiles.Add(GetNeighbourTile(Vector3.left));

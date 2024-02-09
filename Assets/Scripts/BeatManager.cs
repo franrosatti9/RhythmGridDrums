@@ -13,7 +13,7 @@ public class BeatManager : MonoBehaviour
     float secPerBeat;
     float dspTimeSong;
     private int nextClapBeat;
-    private int nextHihatBeat;
+    private int nextBeat;
     private int expectedBeatToMove;
     
     [SerializeField] private float bpm;
@@ -22,13 +22,18 @@ public class BeatManager : MonoBehaviour
 
     [SerializeField] private float beat;
 
+    [SerializeField] private AudioSource bgMusicSource;
+    
     private LinkedList<int> clapsList = new();
 
     public float CurrentBeatPosition => songPosInBeats;
 
+    public float SecondsPerBeat => secPerBeat;
+
     public event Action<float> OnClapPlayed;
-    public event Action OnHasteRealised;
+    public event Action<bool> OnHasteRealised;
     public event Action OnEveryBeat;
+
 
     public static BeatManager instance;
 
@@ -44,7 +49,7 @@ public class BeatManager : MonoBehaviour
         }
 
         // Initialize all Claps list, starting from beat 2
-        for (int i = 2; i < gameLengthInBeats; i += 2)
+        for (int i = 1; i < gameLengthInBeats; i += 2)
         {
             clapsList.AddLast(i);
         }
@@ -58,8 +63,8 @@ public class BeatManager : MonoBehaviour
     private void Start()
     {
         secPerBeat = 60f / bpm;
-        nextClapBeat = 2;
-        nextHihatBeat = 0;
+        nextClapBeat = 1;
+        nextBeat = 0;
         expectedBeatToMove = nextClapBeat;
     }
     
@@ -67,15 +72,19 @@ public class BeatManager : MonoBehaviour
     {
         if (!GameManager.instance.IsStarted) return;
 
-        songPosition += Time.deltaTime;
-        //songPosition = (float)(AudioSettings.dspTime - dspTimeSong); // position in seconds
+        if (Input.GetKey(KeyCode.A))
+        {
+            bgMusicSource.time = bgMusicSource.time - 0.1f;
+        }
+        //songPosition += Time.deltaTime;
+        songPosition = (float)(AudioSettings.dspTime - dspTimeSong); // position in seconds
 
         songPosInBeats = songPosition / secPerBeat; // position in beats
 
-        if (songPosInBeats >= nextHihatBeat)
+        if (songPosInBeats >= nextBeat)
         {
             OnEveryBeat?.Invoke();
-            nextHihatBeat++;
+            nextBeat++;
         }
 
         if (songPosInBeats >= nextClapBeat)
@@ -113,7 +122,7 @@ public class BeatManager : MonoBehaviour
 
     public void GameStart()
     {
-        //GetComponent<AudioSource>()?.Play();
+        bgMusicSource.Play();
         dspTimeSong = (float)AudioSettings.dspTime;
     }
 
@@ -175,16 +184,29 @@ public class BeatManager : MonoBehaviour
 
     public void HastenNextClap()
     {
-        // Check if moved before or after current clap
-        bool exceptFirst = nextClapBeat < expectedBeatToMove;
-        AnticipateAllClaps(exceptFirst);
+        // Check if moved before current clap
+        if (nextClapBeat < expectedBeatToMove)
+        {
+            clapsList.AddAfter(clapsList.First, nextClapBeat + 1);
+            expectedBeatToMove = nextClapBeat + 1;
+            // TODO: Rework so instead of an event with a bool, it tells AudioManager correctly independently of before/after
+            OnHasteRealised?.Invoke(false);
+        }
+        else
+        {
+            clapsList.AddFirst(clapsList.First.Value - 1);
+            
+            nextClapBeat = clapsList.First.Value;
+            expectedBeatToMove = nextClapBeat;
+            OnHasteRealised?.Invoke(true);
+        }
+        
+        //bool exceptFirst = nextClapBeat < expectedBeatToMove;
+        //AnticipateAllClaps(exceptFirst);
         Debug.Log("HASTEN");
         
-        OnHasteRealised?.Invoke();
         
-        nextClapBeat = clapsList.First.Value;
-        expectedBeatToMove = nextClapBeat;
-        
+
         // TODO: Fix bug where Missed raises on Update when moving before current clap
     }
     

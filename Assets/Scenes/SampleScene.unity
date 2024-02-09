@@ -171,6 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sfxSource: {fileID: 722511290}
   sfxSourceBackground: {fileID: 659016453}
+  beatCounter: 0
   _samples: {fileID: 11400000, guid: e0feed56f1e8c8b4cb0d50981ee295df, type: 2}
 --- !u!1 &214988961
 GameObject:
@@ -606,7 +607,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: e403e3fd7074a704b810d7a949d25c13, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
   m_Pitch: 1
@@ -1155,9 +1156,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcc13bb425027145b744f6c6f4dceef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  songPosInBeats: 0
   bpm: 80
   gameLengthInBeats: 120
   beat: 0
+  bgMusicSource: {fileID: 659016453}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
