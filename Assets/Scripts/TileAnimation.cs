@@ -9,20 +9,9 @@ public class TileAnimation : MonoBehaviour
     [SerializeField] private MeshRenderer _meshRenderer;
 
     [SerializeField] private float updateTransitionTime;
+    public float UpdateTransitionTime => updateTransitionTime;
+    
     [SerializeField] private float deactivateTransitionTime;
-    
-    
-    
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void StartActivateAnim(TileDataSO data)
     {
@@ -63,6 +52,7 @@ public class TileAnimation : MonoBehaviour
             _meshRenderer.material.Lerp(initialMat, finalMat, elapsed);
             _visual.color = Color.Lerp(initialSpriteColor, Color.white, elapsed);
             elapsed += Time.deltaTime;
+            
             yield return null;
         }
         
@@ -119,7 +109,7 @@ public class TileAnimation : MonoBehaviour
         // Deactivate 
         float elapsed = 0;
         
-        var initialMat = data.activatedColor;
+        var initialMat = _meshRenderer.material;
         var finalMat = data.deactivatedColor;
         
         var finalSpriteColor = new Color(1, 1, 1, 0);

@@ -26,3 +26,4 @@ MonoBehaviour:
   - data: {fileID: 11400000, guid: f6551d9c2bf6f544fbf8d0fbce1335b8, type: 2}
     weight: 5
   hasteData: {fileID: 11400000, guid: c169e2eb9b5522f4db1b84be581a887b, type: 2}
+  deactivatedData: {fileID: 11400000, guid: 2193190470c58e749a0e1fc15982929d, type: 2}

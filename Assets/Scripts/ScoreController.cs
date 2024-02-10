@@ -19,18 +19,16 @@ public class ScoreController : MonoBehaviour
         GameManager.instance.OnMiss += LoseCombo;
         GameManager.instance.OnTileSuccess += AddScore;
     }
-
+    private void OnDisable()
+    {
+        GameManager.instance.OnMiss -= LoseCombo;
+        GameManager.instance.OnTileSuccess -= AddScore;
+    }
     void Start()
     {
         UpdateCombo();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    
     public void AddScore(int amount)
     {
         score += amount * comboMultiplier;
@@ -59,11 +57,5 @@ public class ScoreController : MonoBehaviour
 
         // Send current multiplier and normalized combo progress
         OnComboUpdated?.Invoke(comboMultiplier, combo - comboMultiplier);
-    }
-    
-    private void OnDisable()
-    {
-        GameManager.instance.OnMiss -= LoseCombo;
-        GameManager.instance.OnTileSuccess -= AddScore;
     }
 }

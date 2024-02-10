@@ -9,6 +9,7 @@ public class PossibleTilesListSO : ScriptableObject
 {
     [SerializeField] private List<DataWithChance> datas;
     [SerializeField] private TileDataSO hasteData;
+    [SerializeField] private TileDataSO deactivatedData;
 
     void Start()
     {
@@ -54,6 +55,11 @@ public class PossibleTilesListSO : ScriptableObject
     public TileDataSO GetHasteTileData()
     {
         return hasteData;
+    }
+
+    public TileDataSO GetDeactivatedData()
+    {
+        return deactivatedData;
     }
 }
 

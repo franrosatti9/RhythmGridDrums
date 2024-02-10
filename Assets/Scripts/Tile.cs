@@ -12,8 +12,9 @@ public class Tile : MonoBehaviour
     public bool Activated { get; private set; }
     public TileType CurrentType { get; private set; }
     [SerializeField] private TileDataSO tileData;
-    private TileDataSO previousTileData;
     [SerializeField] private PossibleTilesListSO possibleTileDatas;
+    private TileDataSO previousTileData;
+    private float setActivatedTime;
     private bool inHasteMode;
     public TileDataSO Data => tileData;
 
@@ -23,6 +24,10 @@ public class Tile : MonoBehaviour
         BeatManager.instance.OnClapPlayed += HandleClapPlayed;
         Player.instance.OnPlayerMoved += HandlePlayerMoved;
         GameManager.instance.OnMiss += HandlePlayerMissed;
+        
+        // To set tile to Activated when half the transition is made
+        setActivatedTime = _animation.UpdateTransitionTime;
+        tileData = possibleTileDatas.GetDeactivatedData();
     }
 
     private void OnDisable()
@@ -41,9 +46,6 @@ public class Tile : MonoBehaviour
 
     private void HandlePlayerMissed()
     {
-        // TODO: Rework this, maybe handle everything on GameManager and deactivate from there
-        if(Player.instance.currentTile == this) TileFailed();
-        
         if(inHasteMode) DeactivateTemporaryHaste();
     }
 
@@ -76,7 +78,7 @@ public class Tile : MonoBehaviour
 
         tileData = possibleTileDatas.GetRandomData();
         
-        //tileData = tileDatas[Random.Range(0, tileDatas.Length)];
+        Invoke(nameof(SetActivatedTrue), setActivatedTime);
         Activated = true;
         
         _animation.StartActivateAnim(tileData);
@@ -86,18 +88,28 @@ public class Tile : MonoBehaviour
     public void UpdateTile(TileDataSO newData)
     {
         if (!inHasteMode) return;
-        tileData = newData;
-        Activated = true;
+
+        if (newData == possibleTileDatas.GetDeactivatedData())
+        {
+            _animation.StartDeactivatedAnim(tileData, ResetTile);
+            ResetTile();
+        }
+        else
+        {
+            tileData = newData;
+            Activated = true;
+            _animation.StartUpdateTileAnim(tileData);
+            
+        }
         
-        _animation.StartUpdateTileAnim(tileData);
 
     }
 
     public void CompletedTile()
     {
         if (!Activated) return;
-        ResetTile();
         _animation.StartCompletedAnim(tileData, ResetTile);
+        ResetTile();
         GameManager.instance.CompletedTile();
         
         //Debug.Log("TILE SUCCESS");
@@ -106,15 +118,16 @@ public class Tile : MonoBehaviour
     public void TileFailed()
     {
         if (!Activated) return;
-        ResetTile();
         _animation.StartDeactivatedAnim(tileData, ResetTile);
+        ResetTile();
         GameManager.instance.MissedTile();
     }
 
     public void ResetTile()
     {
+        tileData = possibleTileDatas.GetDeactivatedData();
         Activated = false;
-        Invoke("ActivateTile", Random.Range(1f, 10f));
+        Invoke(nameof(ActivateTile), Random.Range(1f, 10f));
         //Debug.Log("RESET!");
     }
 
@@ -174,6 +187,11 @@ public class Tile : MonoBehaviour
         //Debug.Log("Deactivate Haste!");
         UpdateTile(previousTileData);
         inHasteMode = false;
+    }
+
+    void SetActivatedTrue()
+    {
+        Activated = true;
     }
 }
 

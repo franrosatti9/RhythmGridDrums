@@ -22,7 +22,7 @@ public class AudioManager : MonoBehaviour
     private bool hastenClapPlayed;
     private bool trackOnGlitchEffect;
 
-    private int[] beatsToAllowGlitchEffect = {0,1,5,6,9,10,13,14};
+    private int[] beatsToAllowGlitchEffect = {2,6,10,13,14};
 
     [SerializeField] private SamplesSO _samples;
     [SerializeField] private ScoreController scoreController;
@@ -105,27 +105,9 @@ public class AudioManager : MonoBehaviour
         }
     }
     
-    
     public void PlayKick()
     {
         sfxSource.PlayOneShot(_samples.kick);
-    }
-
-    public void PlayHihat()
-    {
-        sfxSourceBackground.PlayOneShot(_samples.hiHat);
-    }
-
-    public void PlayBackgroundSection(int beatPlayed)
-    {
-        // Replace current section with next and play it, save next for haste glitchy effect
-        if(currentBgSection != null) currentBgSection = nextBgSection;
-        else currentBgSection = _samples.GetRandomBackgroundPart(beatPlayed);
-        
-        nextBgSection = _samples.GetRandomBackgroundPart((beatPlayed + 1) % 4);
-        
-        sfxSourceBackground.clip = currentBgSection;
-        sfxSourceBackground.Play();
     }
 
     public void PlayNextBgSection()

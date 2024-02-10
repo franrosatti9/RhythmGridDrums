@@ -41,6 +41,13 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         BeatManager.instance.OnClapPlayed += HandleClapPlayed;
+        GameManager.instance.OnMiss += HandlePlayerMissed;
+    }
+    
+    private void OnDisable()
+    {
+        BeatManager.instance.OnClapPlayed -= HandleClapPlayed;
+        GameManager.instance.OnMiss -= HandlePlayerMissed;
     }
 
     private void HandleClapPlayed(float beat)
@@ -90,7 +97,7 @@ public class Player : MonoBehaviour
 
     public void CheckTileMistake()
     {
-        if(!currentTile.Activated || currentTile == null) return;
+        if(currentTile == null || !currentTile.Activated) return;
         // Calculate when kick was played between claps (from 0 to 2)
         float kickBeatPlayed = BeatManager.instance.CurrentBeatPosition - lastClapBeat;
         currentKickInput.Add(kickBeatPlayed);
@@ -101,7 +108,7 @@ public class Player : MonoBehaviour
         if (Mathf.Abs(beatToCheck - kickBeatPlayed) > 0.2f)
         {
             // Failed to complete tile
-            currentTile.TileFailed();
+            FailAndClearCurrentTile();
         }
         else
         {
@@ -113,7 +120,7 @@ public class Player : MonoBehaviour
         // If input amount is different than required, failed
         if (currentTile.Data.requiredKickBeats.Length != currentKickInput.Count)
         {
-            currentTile.TileFailed();
+            FailAndClearCurrentTile();
             return;
         }
         
@@ -122,8 +129,7 @@ public class Player : MonoBehaviour
         {
             if (Mathf.Abs(currentKickInput[i] - currentTile.Data.requiredKickBeats[i]) > 0.2f)
             {
-                
-                currentTile.TileFailed();
+                FailAndClearCurrentTile();
                 return;
             }
         }
@@ -138,25 +144,29 @@ public class Player : MonoBehaviour
     {
         // Reset current input 
         currentKickInput.Clear();
-        currentTile = newTile;
+        if (newTile.Activated) currentTile = newTile;
+        else currentTile = null;
         
         //TODO: Fix bug when moving too fast between tiles, try to ignore next
         
         // Deactivate both if moved incorrectly to new tile
         // Apply tile effect if moved correctly (like skip or hasten next clap)
-        if (correctMovement)
+        if (currentTile != null)
         {
-            if (!inHasteMode) currentTile.ApplyEffect();
-            
-            if (currentTile.Data.effect == TileEffect.HastenClap && !inHasteMode)
+            if (correctMovement)
             {
-                inHasteMode = true;
-                currentTile.TransformSurroundingTiles();
-                return;
+                if (!inHasteMode) currentTile.ApplyEffect();
+
+                if (currentTile.Data.effect == TileEffect.HastenClap && !inHasteMode)
+                {
+                    inHasteMode = true;
+                    currentTile.TransformSurroundingTiles();
+                    return;
+                }
             }
+            else FailAndClearCurrentTile();
         }
-        else currentTile.TileFailed();
-        
+
         if (inHasteMode) inHasteMode = false;
     }
     public void MovePlayer(Tile newTile)
@@ -195,47 +205,20 @@ public class Player : MonoBehaviour
         
     }
 
-    void TransformSurroundingTiles()
+
+    private void HandlePlayerMissed()
     {
-        //List<Tile> surroundingTiles = new List<Tile>();
-
-        
-        GetNeighbourTile(Vector3.forward);
-        GetNeighbourTile(Vector3.left);
-        GetNeighbourTile(Vector3.right);
-        GetNeighbourTile(Vector3.back);
-
-        inHasteMode = false;
-/*
-        surroundingTiles.Add(GetNeighbourTile(Vector3.forward));
-        surroundingTiles.Add(GetNeighbourTile(Vector3.left));
-        surroundingTiles.Add(GetNeighbourTile(Vector3.right));
-        surroundingTiles.Add(GetNeighbourTile(Vector3.back));
-
-        var forward = GetNeighbourTile(Vector3.forward);
-
-        GameManager.instance.TransformToHasteTiles(surroundingTiles);
-        */
+        // TODO: Rework this, maybe handle everything on GameManager and deactivate from there
+        if (IsOnTile()) FailAndClearCurrentTile();
     }
+
+    private void FailAndClearCurrentTile()
+    {
+        currentTile.TileFailed();
+        currentTile = null;
+    }
+
+    public bool IsOnTile() => currentTile != null;
     
-    Tile GetNeighbourTile(Vector3 dir)
-    {
-        if (Physics.Raycast(transform.position, Vector3.right, out RaycastHit hit, 1f))
-        {
-            var tile = hit.collider.GetComponentInParent<Tile>();
-            if (tile)
-            {
-                Debug.Log("Transform tile?");
-                tile.ActivateTemporaryHaste();
-                return tile;
-            }
-        }
-
-        return null;
-    }
     
-    private void OnDisable()
-    {
-        BeatManager.instance.OnClapPlayed -= HandleClapPlayed;
-    }
 }
