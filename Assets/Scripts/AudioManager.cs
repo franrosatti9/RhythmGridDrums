@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.Serialization;
 
 public class AudioManager : MonoBehaviour
@@ -90,6 +91,8 @@ public class AudioManager : MonoBehaviour
     {
         // TODO: Play Crash and piano/instrument stop
         sfxSource.PlayOneShot(_samples.finishImpact);
+        sfxSource.PlayOneShot(_samples.finishMusic);
+        sfxSourceBackground.Stop();
     }
 
     public void PlayClap(float beatPlayed)
@@ -112,6 +115,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayNextBgSection()
     {
+        PostProcessManager.instance.HasteEffect();
         Debug.LogWarning("SONG GLITCH ON BEAT " + beatCounter + "(" + beatCounter % 16 + ")");
         trackOnGlitchEffect = true;
         hastenedTrackTime = BeatManager.instance.CurrentBeatPosition * secPerBeat + secPerBeat;

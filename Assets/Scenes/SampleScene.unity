@@ -309,7 +309,7 @@ RectTransform:
   m_GameObject: {fileID: 229823115}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1276854521}
@@ -378,8 +378,8 @@ MonoBehaviour:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0.28475437, g: 0.50916976, b: 0.764151, a: 1}
   - {r: 0.31372374, g: 0.8867924, b: 0.41463664, a: 1}
-  - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 0.9642062, g: 0, b: 1, a: 1}
+  - {r: 0.9150943, g: 0.28920433, b: 0.28920433, a: 1}
+  - {r: 0.88408947, g: 0.51998043, b: 0.8962264, a: 1}
   progressBar: {fileID: 1889432040}
   scoreController: {fileID: 1637267690}
 --- !u!1001 &550305317
@@ -1115,7 +1115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bpm: 80
-  gameLengthInBeats: 120
+  gameLengthInBeats: 4
   beat: 0
   bgMusicSource: {fileID: 659016453}
 --- !u!1 &945006925
@@ -1161,8 +1161,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.70803493
     - serializedVersion: 3
-      time: 0.5060955
-      value: 0.99710244
+      time: 0.15192378
+      value: 0.99946374
       inSlope: 0.0032722566
       outSlope: 0.0032722566
       tangentMode: 0
@@ -1220,26 +1220,59 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 20
-      outSlope: 20
+      inSlope: 36.11993
+      outSlope: 36.11993
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.5
+      time: 0.27685547
       value: 10
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
+      inSlope: -0
+      outSlope: -0
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 1
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -20
-      outSlope: -20
+      inSlope: -13.828494
+      outSlope: -13.828494
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  colorGradingCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: -Infinity
+      outSlope: -Infinity
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.31203073
+      value: -45.01964
+      inSlope: 0.039061673
+      outSlope: 0.039061673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 65.438446
+      outSlope: 65.438446
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -1251,8 +1284,9 @@ MonoBehaviour:
   defaultVignetteColor:
     overrideState: 0
     value: {r: 0, g: 0, b: 0, a: 0}
-  lostComboEffectDuration: 0.5
+  lostComboEffectDuration: 0.6
   successEffectDuration: 0.5
+  hasteEffectDuration: 1.3
   scoreController: {fileID: 1637267690}
 --- !u!4 &945006927
 Transform:
@@ -1306,7 +1340,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.6509434, g: 0.38995194, b: 0.6509434, a: 0}
+  m_BackGroundColor: {r: 0.5188679, g: 0.2961463, b: 0.5188679, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -6789,8 +6823,8 @@ Canvas:
   m_GameObject: {fileID: 2054703019}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 963194227}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

@@ -47,12 +47,6 @@ public class BeatManager : MonoBehaviour
         {
             instance = this;
         }
-
-        // Initialize all Claps list, starting from beat 2
-        for (int i = 1; i < gameLengthInBeats; i += 2)
-        {
-            clapsList.AddLast(i);
-        }
     }
 
     private void OnEnable()
@@ -62,6 +56,19 @@ public class BeatManager : MonoBehaviour
 
     private void Start()
     {
+        gameLengthInBeats = AudioManager.instance.Samples.lengthInBeats;
+        bpm = AudioManager.instance.Samples.bpm;
+        
+        // Initialize all Claps list, starting from beat 2
+        for (int i = 1; i < gameLengthInBeats; i++)
+        {
+            // Add claps only in odd beats
+            if (i % 2 == 0) continue;
+            clapsList.AddLast(i);
+        }
+        
+        Debug.Log(clapsList.Count);
+        
         secPerBeat = 60f / bpm;
         nextClapBeat = 1;
         nextBeat = 0;
@@ -85,27 +92,34 @@ public class BeatManager : MonoBehaviour
         {
             OnEveryBeat?.Invoke();
             nextBeat++;
+            if (nextBeat > gameLengthInBeats)
+            {
+                GameManager.instance.FinishGame();
+                return;
+            }
         }
 
+
+        if (clapsList.Count == 0) return;
         if (songPosInBeats >= nextClapBeat)
         {
+
+            // "Dequeue" clap and now check for next one
+            
             Debug.Log("Played Clap: " + songPosInBeats);
+
             // Event with beat played information
             OnClapPlayed?.Invoke(nextClapBeat);
-            
-            // "Dequeue" clap and now check for next one
 
-            if (clapsList.Count > 0)
+            clapsList.RemoveFirst();
+
+            if (clapsList.First == null)
             {
-                clapsList.RemoveFirst();
-                if (clapsList.First == null)
-                {
-                    GameManager.instance.FinishGame();
-                    return;
-                }
-
-                nextClapBeat = clapsList.First.Value;
+                return;
             }
+
+            nextClapBeat = clapsList.First.Value;
+
 
         }
 
@@ -162,24 +176,19 @@ public class BeatManager : MonoBehaviour
         {
             Debug.Log("Skipped Clap");
             GameManager.instance.MissedMovement();
-            expectedBeatToMove = GetClapAfterNext();
+            expectedBeatToMove = nextClapBeat;
 
             return false;
         }
 
         return false;
-
-
     }
 
     public int GetClapAfterNext()
     {
-        if (clapsList.First.Next != null)
-        {
-            return clapsList.First.Next.Value;
-        }
+        if (clapsList.First?.Next == null) return gameLengthInBeats;;
 
-        return -1;
+        return clapsList.First.Next.Value;
     }
 
     public void HastenNextClap()
@@ -214,26 +223,16 @@ public class BeatManager : MonoBehaviour
     public void SkipNextClap()
     {
         if(clapsList.Contains(expectedBeatToMove)) clapsList.Remove(expectedBeatToMove);
-        nextClapBeat = clapsList.First.Value;
         
-        expectedBeatToMove = nextClapBeat;
-    }
-
-    // TODO: Figure out a simpler way to do this
-    public void AnticipateAllClaps(bool exceptFirst)
-    {
-        LinkedList<int> newList = new();
-        foreach (int clap in clapsList)
+        // Check if moved before current clap
+        if (nextClapBeat < expectedBeatToMove)
         {
-            if (exceptFirst && newList.Count == 0)
-            {
-                newList.AddLast(clap);
-                continue;
-            }
-            
-            newList.AddLast(clap - 1);
+            expectedBeatToMove = GetClapAfterNext();
         }
-
-        clapsList = newList;
+        else
+        {
+            nextClapBeat = clapsList.First.Value;
+            expectedBeatToMove = nextClapBeat;
+        }
     }
 }

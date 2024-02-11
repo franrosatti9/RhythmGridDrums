@@ -91,7 +91,7 @@ public class Tile : MonoBehaviour
 
         if (newData == possibleTileDatas.GetDeactivatedData())
         {
-            _animation.StartDeactivatedAnim(tileData, ResetTile);
+            _animation.StartDeactivatedAnim(tileData);
             ResetTile();
         }
         else
@@ -108,7 +108,7 @@ public class Tile : MonoBehaviour
     public void CompletedTile()
     {
         if (!Activated) return;
-        _animation.StartCompletedAnim(tileData, ResetTile);
+        _animation.StartCompletedAnim(tileData);
         ResetTile();
         GameManager.instance.CompletedTile();
         
@@ -118,7 +118,7 @@ public class Tile : MonoBehaviour
     public void TileFailed()
     {
         if (!Activated) return;
-        _animation.StartDeactivatedAnim(tileData, ResetTile);
+        _animation.StartDeactivatedAnim(tileData);
         ResetTile();
         GameManager.instance.MissedTile();
     }
@@ -127,7 +127,7 @@ public class Tile : MonoBehaviour
     {
         tileData = possibleTileDatas.GetDeactivatedData();
         Activated = false;
-        Invoke(nameof(ActivateTile), Random.Range(1f, 10f));
+        Invoke(nameof(ActivateTile), Random.Range(2f, 10f));
         //Debug.Log("RESET!");
     }
 
@@ -158,20 +158,17 @@ public class Tile : MonoBehaviour
         inHasteMode = false;
     }
     
-    Tile GetNeighbourTile(Vector3 dir)
+    void GetNeighbourTile(Vector3 dir)
     {
         if (Physics.Raycast(transform.position, dir, out RaycastHit hit, 1f))
         {
             var tile = hit.collider.GetComponentInParent<Tile>();
             if (tile)
             {
-                Debug.Log("hit " + tile.name + " in " + tile.transform.position);
+                //Debug.Log("hit " + tile.name + " in " + tile.transform.position);
                 tile.ActivateTemporaryHaste();
-                return tile;
             }
         }
-
-        return null;
     }
 
     public void ActivateTemporaryHaste()

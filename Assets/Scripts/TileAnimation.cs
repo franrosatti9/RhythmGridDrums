@@ -19,16 +19,16 @@ public class TileAnimation : MonoBehaviour
         StartCoroutine(ActivateAnimation(data));
     }
 
-    public void StartCompletedAnim(TileDataSO data, Action resetCallback)
+    public void StartCompletedAnim(TileDataSO data)
     {
         //StopAllCoroutines();
-        StartCoroutine(CompletedAnimation(data, resetCallback));
+        StartCoroutine(CompletedAnimation(data));
     }
 
-    public void StartDeactivatedAnim(TileDataSO data, Action resetCallback)
+    public void StartDeactivatedAnim(TileDataSO data)
     {
         //StopAllCoroutines();
-        StartCoroutine(DeactivateAnimation(data, resetCallback));
+        StartCoroutine(DeactivateAnimation(data));
     }
     
     public void StartUpdateTileAnim(TileDataSO tileData)
@@ -87,7 +87,7 @@ public class TileAnimation : MonoBehaviour
         
     }
     
-    IEnumerator CompletedAnimation(TileDataSO data, Action resetCallback)
+    IEnumerator CompletedAnimation(TileDataSO data)
     {
         // Flash completed color
         _meshRenderer.material = data.completedFlashColor;
@@ -98,13 +98,10 @@ public class TileAnimation : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         _meshRenderer.material = data.activatedColor;
 
-        StartCoroutine(DeactivateAnimation(data, resetCallback));
-
-
-
+        StartCoroutine(DeactivateAnimation(data));
     }
 
-    IEnumerator DeactivateAnimation(TileDataSO data, Action resetCallback)
+    IEnumerator DeactivateAnimation(TileDataSO data)
     {
         // Deactivate 
         float elapsed = 0;
@@ -126,8 +123,5 @@ public class TileAnimation : MonoBehaviour
         _meshRenderer.material = finalMat;
         _visual.color = Color.Lerp(Color.white, finalSpriteColor, 1);
         _visual.sprite = null;
-        //resetCallback.Invoke();
     }
-
-    
 }

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44c8fd4d3ee396d47804f5b50495704c, type: 3}
-  m_Name: TileDataList
+  m_Name: LofiTileDataList
   m_EditorClassIdentifier: 
   datas:
   - data: {fileID: 11400000, guid: b151c3156a931de47b9e09b0ef4cf9b0, type: 2}
-    weight: 40
+    weight: 50
   - data: {fileID: 11400000, guid: ddd4113102096684f8583412ff91d523, type: 2}
     weight: 30
   - data: {fileID: 11400000, guid: 6fe327e02ffdf1944b6f499f480fe643, type: 2}

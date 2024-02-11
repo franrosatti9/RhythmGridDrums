@@ -101,6 +101,12 @@ public class Player : MonoBehaviour
         // Calculate when kick was played between claps (from 0 to 2)
         float kickBeatPlayed = BeatManager.instance.CurrentBeatPosition - lastClapBeat;
         currentKickInput.Add(kickBeatPlayed);
+
+        if (currentKickInput.Count > currentTile.Data.requiredKickBeats.Length)
+        {
+            FailAndClearCurrentTile();
+            return;
+        }
         
         // Check if last played kick is correct compared to required kicks on this tile
         float beatToCheck = currentTile.Data.requiredKickBeats[currentKickInput.Count - 1];
@@ -109,9 +115,6 @@ public class Player : MonoBehaviour
         {
             // Failed to complete tile
             FailAndClearCurrentTile();
-        }
-        else
-        {
         }
     }
 

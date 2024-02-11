@@ -54,6 +54,7 @@ public class ScoreComboUI : MonoBehaviour
         UpdateColors(currentCombo);
         
         multiplierText.text = "x" + currentCombo;
+        if (currentCombo == 5) progress = 1f;
         
         // TODO: Add Lerp to progress fill
         progressBar.fillAmount = progress;
@@ -65,6 +66,12 @@ public class ScoreComboUI : MonoBehaviour
         // Change color of everything (add more stuff like a bar) to the current current combo color
         multiplierText.color = multiplierColors[combo - 1];
         progressBar.color = multiplierColors[combo - 1];
+    }
+
+    // TODO: Animate bar 
+    IEnumerator AnimateProgressBar()
+    {
+        yield return null;
     }
     
 }

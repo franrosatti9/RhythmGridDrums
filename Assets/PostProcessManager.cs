@@ -11,17 +11,20 @@ public class PostProcessManager : MonoBehaviour
     private ChromaticAberration _chromaticAberration;
     private Vignette _vignette;
     private LensDistortion _lensDistortion;
+    private ColorGrading _colorGrading;
 
 
     [SerializeField] AnimationCurve vignetteColorCurve;
     [SerializeField] AnimationCurve vignetteIntensityCurve;
     [SerializeField] AnimationCurve lensDistortionCurve;
+    [SerializeField] AnimationCurve colorGradingCurve;
     [SerializeField] Color vignetteColor;
     [SerializeField] ColorParameter defaultVignetteColor;
     float defaultVignetteIntensity;
 
     [SerializeField] float lostComboEffectDuration;
     [SerializeField] float successEffectDuration;
+    [SerializeField] float hasteEffectDuration;
     [SerializeField] private ScoreController scoreController;
     public static PostProcessManager instance;
 
@@ -42,6 +45,7 @@ public class PostProcessManager : MonoBehaviour
         volume.profile.TryGetSettings(out _chromaticAberration);
         volume.profile.TryGetSettings(out _vignette);
         volume.profile.TryGetSettings(out _lensDistortion);
+        volume.profile.TryGetSettings(out _colorGrading);
         
         defaultVignetteIntensity = _vignette.intensity.value;
         //defaultVignetteColor = (ColorParameter)vignette.color;
@@ -60,6 +64,7 @@ public class PostProcessManager : MonoBehaviour
 
     public void LostComboEffect(int mult, float progress)
     {
+        // TODO: IMPROVE TO ONLY LiSTEN TO EVENT WHEN LOST COMBO COMPLETELY
         if (mult != 1 || progress != 0) return;
         StopAllCoroutines();
         StartCoroutine(AnimateLostComboEffect());
@@ -67,12 +72,12 @@ public class PostProcessManager : MonoBehaviour
 
     public void SuccessEffect(int beat)
     {
-        //float diff = 100f - healthLeft;
-
-        //float intensity = 1; //Unity.Mathematics.math.remap(0f, 100f, 0.25f, 0.35f, diff);
-
-
         StartCoroutine(AnimateSuccessEffect());
+    }
+
+    public void HasteEffect()
+    {
+        StartCoroutine(AnimateHasteEffect());
     }
 
     IEnumerator AnimateSuccessEffect()
@@ -91,8 +96,7 @@ public class PostProcessManager : MonoBehaviour
             yield return null;
         }
         _vignette.color.value = defaultVignetteColor;
-        _lensDistortion.intensity.value = 1f;
-        //vignette.intensity.value = defaultVignetteIntensity;
+        _lensDistortion.intensity.value = 0f;
     }
 
     IEnumerator AnimateLostComboEffect()
@@ -106,8 +110,36 @@ public class PostProcessManager : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
+        
+        // In case another coroutine was interrupted
+        SetEverythingToDefault();
+    }
+
+    IEnumerator AnimateHasteEffect()
+    {
+        float elapsed = 0f;
+
+        _colorGrading.enabled.value = true;
+        
+        while (elapsed < hasteEffectDuration)
+        {
+            _colorGrading.saturation.value = colorGradingCurve.Evaluate(elapsed / hasteEffectDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        _colorGrading.enabled.value = false;
+    }
+
+    public void SetEverythingToDefault()
+    {
+        _colorGrading.saturation.value = 0;
+        _colorGrading.enabled.value = false;
+        
+        _vignette.color.value = defaultVignetteColor;
         _vignette.intensity.value = defaultVignetteIntensity;
-        //vignette.intensity.value = vignetteCurve.keys[vignetteCurve.length - 1].value;
+        
+        _lensDistortion.intensity.value = 0f;
     }
 }
 
