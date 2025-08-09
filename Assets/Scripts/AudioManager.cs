@@ -71,9 +71,13 @@ public class AudioManager : MonoBehaviour
     private void HandleBackgroundMusic()
     {
         beatCounter++;
-        
-        
-        //if (beatCounter > 7) beatCounter = 0;
+
+
+        if (beatCounter == _samples.lengthInBeats - 1)
+        {
+            musicMixer.SetFloat("Reverb", 600f);
+            musicMixer.SetFloat("ReverbRoom", -500f);
+        }
 
         // If on effect, get track back to normal
         if (beatCounter % 2 != 0 && trackOnGlitchEffect)
@@ -83,6 +87,8 @@ public class AudioManager : MonoBehaviour
             trackOnGlitchEffect = false;
         }
         
+        
+        
         //PlayBackgroundSection(beatCounter / 2);
 
     }
@@ -91,7 +97,7 @@ public class AudioManager : MonoBehaviour
     {
         // TODO: Play Crash and piano/instrument stop
         sfxSource.PlayOneShot(_samples.finishImpact);
-        sfxSource.PlayOneShot(_samples.finishMusic);
+        //sfxSource.PlayOneShot(_samples.finishMusic);
         sfxSourceBackground.Stop();
     }
 

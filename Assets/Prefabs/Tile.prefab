@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: b151c3156a931de47b9e09b0ef4cf9b0, type: 2}
   possibleTileDatas: {fileID: 11400000, guid: 6648e8c8203431345adaf90229431b64, type: 2}
+  autoActivate: 1
 --- !u!114 &2467059896224848314
 MonoBehaviour:
   m_ObjectHideFlags: 0

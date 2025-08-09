@@ -16,7 +16,11 @@ public class Tile : MonoBehaviour
     private TileDataSO previousTileData;
     private float setActivatedTime;
     private bool inHasteMode;
+    public bool autoActivate = true;
     public TileDataSO Data => tileData;
+    public bool CanMoveTo { get; private set; } = true;
+    public event Action OnTileCompleted;
+    public bool IsHasteEnd => inHasteMode;
 
     private void Awake()
     {
@@ -56,22 +60,24 @@ public class Tile : MonoBehaviour
 
     void Start()
     {
-        Invoke("ActivateTile", Random.Range(1f, 10f));
+        if(autoActivate) Invoke(nameof(ActivateTile), Random.Range(1f, 10f));
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetCanMoveTo(bool canMove)
     {
-        
+        CanMoveTo = canMove;
+        if(!canMove) Debug.Log("Setting CanMove to false");
     }
 
     public void SetStartingTile()
     {
         
     }
+    
 
     public void ActivateTile()
     {
+        Debug.LogWarning("ACTIVATING TILE");
         if (Activated) return;
 
         // TODO: Make this random initialization better
@@ -82,7 +88,20 @@ public class Tile : MonoBehaviour
         Activated = true;
         
         _animation.StartActivateAnim(tileData);
+    }
 
+    public void ActivateTileWithData(TileDataSO data)
+    {
+        if (Activated) return;
+
+        // TODO: Make this random initialization better
+
+        tileData = data;
+        
+        Invoke(nameof(SetActivatedTrue), setActivatedTime);
+        Activated = true;
+        
+        _animation.StartActivateAnim(tileData);
     }
     
     public void UpdateTile(TileDataSO newData)
@@ -108,9 +127,12 @@ public class Tile : MonoBehaviour
     public void CompletedTile()
     {
         if (!Activated) return;
+        if(inHasteMode) GameManager.instance.CompletedHaste();
+        
         _animation.StartCompletedAnim(tileData);
         ResetTile();
         GameManager.instance.CompletedTile();
+        OnTileCompleted?.Invoke();
         
         //Debug.Log("TILE SUCCESS");
     }
@@ -127,7 +149,7 @@ public class Tile : MonoBehaviour
     {
         tileData = possibleTileDatas.GetDeactivatedData();
         Activated = false;
-        Invoke(nameof(ActivateTile), Random.Range(2f, 10f));
+        if(autoActivate) Invoke(nameof(ActivateTile), Random.Range(2f, 10f));
         //Debug.Log("RESET!");
     }
 

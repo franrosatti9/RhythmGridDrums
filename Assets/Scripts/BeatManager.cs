@@ -78,12 +78,7 @@ public class BeatManager : MonoBehaviour
     void Update()
     {
         if (!GameManager.instance.IsStarted) return;
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            bgMusicSource.time = bgMusicSource.time - 0.1f;
-        }
-        //songPosition += Time.deltaTime;
+        
         songPosition = (float)(AudioSettings.dspTime - dspTimeSong); // position in seconds
 
         songPosInBeats = songPosition / secPerBeat; // position in beats
@@ -164,8 +159,6 @@ public class BeatManager : MonoBehaviour
             else
             {
                 expectedBeatToMove = GetClapAfterNext();
-
-
             }
 
             return true;
@@ -213,8 +206,6 @@ public class BeatManager : MonoBehaviour
         //bool exceptFirst = nextClapBeat < expectedBeatToMove;
         //AnticipateAllClaps(exceptFirst);
         Debug.Log("HASTEN");
-        
-        
 
         // TODO: Fix bug where Missed raises on Update when moving before current clap
     }

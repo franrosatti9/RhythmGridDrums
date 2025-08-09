@@ -78,7 +78,7 @@ public class Player : MonoBehaviour
                 Vector3.down, out RaycastHit hit, 2f);
             
             
-            if (hit.collider != null && hit.collider.transform.root.TryGetComponent(out Tile newTile))
+            if (hit.collider != null && hit.collider.transform.root.TryGetComponent(out Tile newTile) && newTile.CanMoveTo)
             {
                 MovePlayer(newTile);
             }
@@ -88,7 +88,7 @@ public class Player : MonoBehaviour
             Physics.Raycast(transform.position + new Vector3(0, 1, yInput * rayOffsetDistance),
                 Vector3.down, out RaycastHit hit, 2f);
 
-            if (hit.collider != null && hit.collider.transform.root.TryGetComponent(out Tile newTile))
+            if (hit.collider != null && hit.collider.transform.root.TryGetComponent(out Tile newTile) && newTile.CanMoveTo)
             {
                 MovePlayer(newTile);
             }

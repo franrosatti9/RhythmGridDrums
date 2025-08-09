@@ -26,7 +26,7 @@ public class ScoreController : MonoBehaviour
     }
     void Start()
     {
-        UpdateCombo();
+        //UpdateCombo();
     }
     
     public void AddScore(int amount)

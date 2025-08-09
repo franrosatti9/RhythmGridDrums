@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public event Action OnGameStarted;
     public event Action OnGameFinished;
     public event Action OnMiss;
-    public event Action OnSuccesOrFail;
+    public event Action OnHasteCompleted;
     public event Action<int> OnTileSuccess;
     public static GameManager instance;
     private void Awake()
@@ -50,14 +50,13 @@ public class GameManager : MonoBehaviour
     public void PlayerMoved(float beatDelta)
     {
         OnTileSuccess?.Invoke(100);
-        Debug.Log("BIEN CAPO");
-        
+        //Debug.Log("BIEN CAPO");
     }
 
     public void MissedMovement()
     {
         OnMiss?.Invoke();
-        Debug.Log("Missed");
+        //Debug.Log("Missed");
     }
 
     public void CompletedTile()
@@ -74,7 +73,11 @@ public class GameManager : MonoBehaviour
     {
         IsStarted = false;
         OnGameFinished?.Invoke();
-        
+    }
+
+    public void CompletedHaste()
+    {
+        OnHasteCompleted?.Invoke();
     }
 
     public void TransformToHasteTiles(List<Tile> tiles)

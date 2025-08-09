@@ -29,9 +29,9 @@ public class LevelGenerator : MonoBehaviour
             {
                 Tile newTile = Instantiate(tile, new Vector3Int(x - offset, 0, z - offset), Quaternion.identity);
 
-                if (tile.transform.position.x - offset == 0)
+                if (Mathf.Approximately(newTile.transform.position.x, offset) && Mathf.Approximately(newTile.transform.position.z, offset))
                 {
-                    tile.SetStartingTile();
+                    newTile.SetStartingTile();
                 }
             }
         }
@@ -40,6 +40,5 @@ public class LevelGenerator : MonoBehaviour
     void SetupCamera()
     {
         cam.orthographicSize = size / 2f;
-        
     }
 }

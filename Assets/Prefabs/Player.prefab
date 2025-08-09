@@ -150,3 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79141b3c4dc229a4f85a23ceddaba5b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movementRate: 0.3
+  moveTime: 0.1
+  rayOffsetDistance: 1
+  currentTile: {fileID: 0}

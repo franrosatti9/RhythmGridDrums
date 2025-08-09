@@ -36,6 +36,7 @@ public class TileAnimation : MonoBehaviour
         StartCoroutine(ActivateAnimation(tileData));
     }
 
+    // TODO: TRY IMPROVE ANIMATIONS WITH SHADER (maybe it's more performant?)
     IEnumerator ActivateAnimation(TileDataSO data)
     {
         _visual.sprite = data.sprite;
@@ -62,6 +63,7 @@ public class TileAnimation : MonoBehaviour
         
     }
     
+    // TODO: TRY IMPROVE ANIMATIONS WITH SHADER (maybe it's more performant?)
     IEnumerator UpdateAnimation(TileDataSO data)
     {
         _visual.sprite = data.sprite;
@@ -87,6 +89,7 @@ public class TileAnimation : MonoBehaviour
         
     }
     
+    // TODO: TRY IMPROVE ANIMATIONS WITH SHADER (maybe it's more performant?)
     IEnumerator CompletedAnimation(TileDataSO data)
     {
         // Flash completed color
@@ -101,6 +104,7 @@ public class TileAnimation : MonoBehaviour
         StartCoroutine(DeactivateAnimation(data));
     }
 
+    // TODO: TRY IMPROVE ANIMATIONS WITH SHADER (maybe it's more performant?)
     IEnumerator DeactivateAnimation(TileDataSO data)
     {
         // Deactivate 

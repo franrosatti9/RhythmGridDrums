@@ -38,15 +38,15 @@ public class PostProcessManager : MonoBehaviour
         {
             instance = this;
         }
-    }
-
-    void Start()
-    {
+        
         volume.profile.TryGetSettings(out _chromaticAberration);
         volume.profile.TryGetSettings(out _vignette);
         volume.profile.TryGetSettings(out _lensDistortion);
         volume.profile.TryGetSettings(out _colorGrading);
-        
+    }
+
+    void Start()
+    {
         defaultVignetteIntensity = _vignette.intensity.value;
         //defaultVignetteColor = (ColorParameter)vignette.color;
     }
